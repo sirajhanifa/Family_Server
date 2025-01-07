@@ -9,6 +9,18 @@ const todoSchema = new mongoose.Schema({
             deadline: { type: Date, required: true }, // Deadline field
         },
     ],
+    routine: [
+        {
+            task: { type: String, required: true }, // Routine task field
+            time: { type: String, required: true }, // Time field for the daily routine
+        },
+    ],
+    celebrations: [
+        {
+            eventDate: { type: Date, required: true }, // Date of the celebration
+            description: { type: String, required: true }, // Description of the event
+        },
+    ],
 });
 
 // Create the To-Do model
