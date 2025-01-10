@@ -12,6 +12,7 @@ const todo = require('./models/ToDoList')
 const login = require('./routes/Login')
 const todolist = require('./routes/Todo')
 const celebration = require('./routes/Celebrations')
+const dailyroutine = require('./routes/DailyRoutine')
 
 require('dotenv').config();
 
@@ -29,6 +30,7 @@ app.use(cors());
 app.use('/api', login)
 app.use('/api', todolist)
 app.use('/api', celebration)
+app.use('/api', dailyroutine)
 
 // Start server
 const PORT = process.env.PORT;
