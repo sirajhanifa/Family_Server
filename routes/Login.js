@@ -1,18 +1,22 @@
 const express = require('express');
-const User = require('../models/User'); // Ensure the User model is properly set up and imported
-const Todo = require('../models/ToDoList')
+const User = require('../models/User'); // User model
+const Todo = require('../models/ToDoList'); // Todo model
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const route = express.Router();
+const secretKey = "abcdef"; // Replace with a more secure key in production
 
+// Login
 route.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-
-  // Validate input
-  if (!username || !password) {
-    return res.status(400).json({ message: 'Username and password are required.' });
-  }
-
   try {
+    const { username, password } = req.body;
+
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required.' });
+    }
+
     // Find the user by username
     const user = await User.findOne({ username });
 
@@ -21,54 +25,52 @@ route.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid username or password.' });
     }
 
-    // Compare plain text passwords
-    if (user.password !== password) {
+    // Compare provided password with hashed password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid username or password.' });
     }
 
-    // If credentials are correct, send a success response
+    // Generate a JWT token
+    const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1h' });
+
     res.status(200).json({
       message: 'Login successful!',
+      token,
       user: {
         id: user._id,
         username: user.username,
-        // Include any other user details, except sensitive ones like the password
       },
     });
   } catch (error) {
-    // Log the error for debugging
     console.error('Login error:', error);
-
-    // Send a generic server error message
     res.status(500).json({ message: 'An unexpected error occurred. Please try again later.' });
   }
 });
-//---------------------------------------------------------
 
-// POST route to create a new user
+// Create a new user
 route.post('/newUser', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-      // Validate input
-      if (!username || !password) {
-          return res.status(400).json({ error: "Username and password are required" });
-      }
+    // Validate input
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
 
-      // Create and save the new user
-      const newUser = new User({ username: username, password: password });
-      const newUserTodo = new Todo ({ username: username });
-      const savedUser = await newUser.save();
-      const savedUserTodo = await newUserTodo.save();
+    // Hash the password
+    const hashPassword = await bcrypt.hash(password, 10);
 
-      // Respond with success
-      res.status(201).json({
-          message: "User created successfully",
-          user: savedUser
-      });
+    // Create and save the new user
+    const newUser = new User({ username, password: hashPassword });
+    const newUserTodo = new Todo({ username });
+    await newUser.save();
+    await newUserTodo.save();
+
+    res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
-      console.error("Error saving user:", error);
-      res.status(500).json({ error: "Internal server error" });
+    console.error('Error saving user:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
