@@ -17,6 +17,7 @@ const todoSchema = new mongoose.Schema({
     ],
     celebrations: [
         {
+            _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() }, // Unique ID for each celebration
             eventDate: { type: Date, required: true }, // Date of the celebration
             description: { type: String, required: true }, // Description of the event
         },

@@ -34,4 +34,8 @@ route.post('/newcelebration', async (req, res) => {
     
 })
 
+//Edit Celebration and eventDate
+
+// route.put('/editcelebration')
+
 module.exports = route;
