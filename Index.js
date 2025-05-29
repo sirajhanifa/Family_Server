@@ -35,5 +35,5 @@ app.use('/api', dailyroutine)
 // Start server
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on the http://localhost:${PORT}`);
 });
