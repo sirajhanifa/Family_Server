@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 
-const connectDB = require('./db'); // Import the database connection
+const connectDB = require('./config/db'); // Import the database connection
 
 //Models
 const user = require('./models/User')
@@ -13,6 +13,7 @@ const login = require('./routes/Login')
 const todolist = require('./routes/Todo')
 const celebration = require('./routes/Celebrations')
 const dailyroutine = require('./routes/DailyRoutine')
+const expense = require('./routes/Expense')
 
 require('dotenv').config();
 
@@ -31,6 +32,7 @@ app.use('/api', login)
 app.use('/api', todolist)
 app.use('/api', celebration)
 app.use('/api', dailyroutine)
+app.use('/api', expense)
 
 // Start server
 const PORT = process.env.PORT;
