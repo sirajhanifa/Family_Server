@@ -3,25 +3,38 @@ const mongoose = require('mongoose');
 // Define To-Do Schema
 const todoSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true }, // Unique key for each user
+
     tasks: [
         {
-            task: { type: String, required: true }, // Task field
-            deadline: { type: Date, required: true }, // Deadline field
+            task: { type: String, required: true },
+            deadline: { type: Date, required: true },
         },
     ],
+
     routine: [
         {
-            task: { type: String, required: true }, // Routine task field
-            time: { type: String, required: true }, // Time field for the daily routine
+            task: { type: String, required: true },
+            time: { type: String, required: true },
         },
     ],
+
     celebrations: [
         {
-            _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() }, // Unique ID for each celebration
-            eventDate: { type: Date, required: true }, // Date of the celebration
-            description: { type: String, required: true }, // Description of the event
+            _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
+            eventDate: { type: Date, required: true },
+            description: { type: String, required: true },
         },
     ],
+
+    expenses: [
+        {
+            _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
+            name: { type: String, required: true },
+            amount: { type: Number, required: true },
+            category: { type: String, required: true },
+            date: { type: Date, default: Date.now }
+        }
+    ]
 });
 
 // Create the To-Do model
