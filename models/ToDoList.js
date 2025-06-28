@@ -26,15 +26,7 @@ const todoSchema = new mongoose.Schema({
         },
     ],
 
-    expenses: [
-        {
-            _id: { type: mongoose.Schema.Types.ObjectId, default: () => new mongoose.Types.ObjectId() },
-            name: { type: String, required: true },
-            amount: { type: Number, required: true },
-            category: { type: String, required: true },
-            date: { type: Date, default: Date.now }
-        }
-    ]
+    
 });
 
 // Create the To-Do model

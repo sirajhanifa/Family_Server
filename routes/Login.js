@@ -1,8 +1,11 @@
 const express = require('express');
 const User = require('../models/User'); // User model
 const Todo = require('../models/ToDoList'); // Todo model
+const Expense = require('../models/Expense')
+const income = require('../models/Income')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const Income = require('../models/Income');
 
 const route = express.Router();
 const secretKey = "abcdef"; // Replace with a more secure key in production
@@ -64,8 +67,12 @@ route.post('/newUser', async (req, res) => {
     // Create and save the new user
     const newUser = new User({ username, password: hashPassword });
     const newUserTodo = new Todo({ username });
+    const newUserExp = new Expense({username});
+    const newUserIncome = new Income({username})
     await newUser.save();
     await newUserTodo.save();
+    await newUserExp.save();  
+    await newUserIncome.save();
 
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
