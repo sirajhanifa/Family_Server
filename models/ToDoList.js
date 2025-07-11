@@ -3,14 +3,6 @@ const mongoose = require('mongoose');
 // Define To-Do Schema
 const todoSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true }, // Unique key for each user
-
-    tasks: [
-        {
-            task: { type: String, required: true },
-            deadline: { type: Date, required: true },
-        },
-    ],
-
     routine: [
         {
             task: { type: String, required: true },

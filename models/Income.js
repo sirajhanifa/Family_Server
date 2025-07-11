@@ -1,23 +1,27 @@
 const mongoose = require('mongoose');
 
 const incomeSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true  // Each user has one income record
-    },
-    total_income: {
-        type: Number,
-        required: false  // Optional at creation
-    },
-    remaining_income: {
-        type: Number,
-        required: false  // Optional at creation
-    },
-    created_at: {
-        type: Date,
-        default: Date.now  // Automatically sets the timestamp
-    }
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  total_income: {
+    type: Number,
+    required: true,
+  },
+  remaining_income: {
+    type: Number,
+    required: true,
+  },
+  month: {
+    type: String, // format: "YYYY-MM" (e.g., "2025-06")
+    required: true,
+  },
+  created_at: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 const Income = mongoose.model('Income', incomeSchema);

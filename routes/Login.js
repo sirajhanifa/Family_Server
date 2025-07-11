@@ -54,6 +54,7 @@ route.post('/login', async (req, res) => {
 // Create a new user
 route.post('/newUser', async (req, res) => {
   const { username, password } = req.body;
+  const currentMonth = new Date().getMonth() + 1; // January = 1
 
   try {
     // Validate input
@@ -67,11 +68,15 @@ route.post('/newUser', async (req, res) => {
     // Create and save the new user
     const newUser = new User({ username, password: hashPassword });
     const newUserTodo = new Todo({ username });
-    const newUserExp = new Expense({username});
-    const newUserIncome = new Income({username})
-    await newUser.save();
+    const newUserExp = new Expense({ username });
+    const newUserIncome = new Income({
+      username,
+      total_income: 0,
+      remaining_income: 0,
+      month: currentMonth
+    }); await newUser.save();
     await newUserTodo.save();
-    await newUserExp.save();  
+    await newUserExp.save();
     await newUserIncome.save();
 
     res.status(201).json({ message: 'User created successfully' });

@@ -12,10 +12,10 @@ const income = require('./models/Income')
 
 //Routes
 const login = require('./routes/Login')
-const todolist = require('./routes/Todo')
 const celebration = require('./routes/Celebrations')
 const dailyroutine = require('./routes/DailyRoutine')
 const Expense = require('./routes/Expense')
+const Reports = require('./routes/Reports')
 
 
 require('dotenv').config();
@@ -32,10 +32,10 @@ app.use(cors());
 //Set the routing
 
 app.use('/api', login)
-app.use('/api', todolist)
 app.use('/api', celebration)
 app.use('/api', dailyroutine)
 app.use('/api', Expense)
+app.use('/api', Reports)
 
 // Start server
 const PORT = process.env.PORT;
