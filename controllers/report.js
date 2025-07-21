@@ -1,27 +1,37 @@
-const Expense = require('../models/Expense');
-const Income = require('../models/Income')
+const expense = require('../models/Expense');
 
-const ExpenseReport = async (req, res) => {
-    const { username, date } = req.body; // date should be '2025-06'
-
+const getReport = async (req, res) => {
     try {
-        // Find income for the user and the specific month
-        const IncomeData = await Income.findOne({ username, month: date });
-        if (!IncomeData) {
-            return res.status(404).json({ error: 'No income data found for this user and month' });
+        const { username, date } = req.body; // date format: "2025-06"
+
+        if (!username || !date) {
+            return res.status(400).json({ success: false, message: 'Username and date are required' });
         }
-        const expenseAmount = IncomeData.total_income - IncomeData.remaining_income;
-        res.status(200).json({
-            total_income: IncomeData.total_income,
-            remaining_income: IncomeData.remaining_income,
-            expense: expenseAmount,
-            month: IncomeData.month
+
+        // Parse input date to get month & year
+        const [year, month] = date.split('-');
+
+        const user = await expense.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Filter expenses by month/year
+        const filteredExpenses = user.expenses.filter(exp => {
+            const expDate = new Date(exp.date);
+            return (
+                expDate.getFullYear() === parseInt(year) &&
+                expDate.getMonth() + 1 === parseInt(month) // +1 because getMonth is 0-based
+            );
         });
+
+        res.json({ success: true, data: filteredExpenses });
+
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Report generation error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 
-
-module.exports = { ExpenseReport };
+module.exports = { getReport };

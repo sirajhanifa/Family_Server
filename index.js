@@ -16,6 +16,7 @@ const celebration = require('./routes/Celebrations')
 const dailyroutine = require('./routes/DailyRoutine')
 const Expense = require('./routes/Expense')
 const Reports = require('./routes/Reports')
+const Settings = require('./routes/Settings')
 
 
 require('dotenv').config();
@@ -36,6 +37,7 @@ app.use('/api', celebration)
 app.use('/api', dailyroutine)
 app.use('/api', Expense)
 app.use('/api', Reports)
+app.use('/api', Settings)
 
 // Start server
 const PORT = process.env.PORT;

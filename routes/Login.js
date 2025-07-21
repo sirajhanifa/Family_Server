@@ -6,6 +6,7 @@ const income = require('../models/Income')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Income = require('../models/Income');
+const axios = require('axios');
 
 const route = express.Router();
 const secretKey = "abcdef"; // Replace with a more secure key in production
@@ -53,37 +54,42 @@ route.post('/login', async (req, res) => {
 
 // Create a new user
 route.post('/newUser', async (req, res) => {
-  const { username, password } = req.body;
-  const currentMonth = new Date().getMonth() + 1; // January = 1
+  const { username, password, phone } = req.body;
+  const currentMonth = new Date().getMonth() + 1;
+
+  if (!username || !password || !phone) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
 
   try {
-    // Validate input
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password are required' });
+    // Check if username already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({ error: 'User already exists' });
     }
 
-    // Hash the password
-    const hashPassword = await bcrypt.hash(password, 10);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create and save the new user
-    const newUser = new User({ username, password: hashPassword });
-    const newUserTodo = new Todo({ username });
-    const newUserExp = new Expense({ username });
-    const newUserIncome = new Income({
+    // Create and save the user
+    const newUser = new User({ username, password: hashedPassword, phone });
+    await newUser.save();
+
+    // Create and save related documents
+    await new Todo({ username }).save();
+    await new Expense({ username }).save();
+    await new Income({
       username,
       total_income: 0,
       remaining_income: 0,
       month: currentMonth
-    }); await newUser.save();
-    await newUserTodo.save();
-    await newUserExp.save();
-    await newUserIncome.save();
+    }).save();
 
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully.' });
+
   } catch (error) {
-    console.error('Error saving user:', error);
+    console.error('Signup Error:', error.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 module.exports = route;

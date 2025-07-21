@@ -1,8 +1,8 @@
 const express = require('express');
-const { ExpenseReport } = require('../controllers/report');
 const router = express.Router();
+const {getReport} = require('../controllers/report');
 
-router.post('/reports', ExpenseReport)
+router.post('/report', getReport);
 
 
 module.exports = router;
