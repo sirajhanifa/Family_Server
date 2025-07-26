@@ -9,7 +9,7 @@ const Income = require('../models/Income');
 const axios = require('axios');
 
 const route = express.Router();
-const secretKey = "abcdef"; // Replace with a more secure key in production
+const secretKey = process.env.JWT_SECRET; // Replace with a more secure key in production
 
 // Login
 route.post('/login', async (req, res) => {
